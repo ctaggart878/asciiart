@@ -9,4 +9,4 @@ It requires the jpeg package for R.
 
 And the license is actually in the script. 
 
-(And, just notices that it may have some issues with larger images.  I'll have to check this.) 
+
