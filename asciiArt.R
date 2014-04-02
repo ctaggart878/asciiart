@@ -22,7 +22,6 @@ asciiArt <- function(myUrl) {
 	# This is going to drop a file into your R working directory. 
 	# There are other ways to do this, but this was easy. 
 	# If you wonder where it is, just use getwd() to see where it ended up. 
-		
 	download.file(myUrl, "WhoPutThisShitOnMyComputer")
 	
 	if (fileType == 'png') { 
@@ -30,10 +29,10 @@ asciiArt <- function(myUrl) {
 	} else {
 		img <- readJPEG("WhoPutThisShitOnMyComputer")
 	}
+
 	# Let's check if we're in color.  If so, convert to gray scale.
 	# We'll use a luminosity algorithm to conver to gray scale
 	# Thanks John D. Cook:  http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
-
 	if (length(dim(img))==3) {
 		lum <- c(.21, .71, .07)
 		img[,,1] <- img[,,1] * lum[1]
@@ -68,7 +67,6 @@ asciiArt <- function(myUrl) {
 
 	# Scale our gray image down by taking an average of the pixel
 	# values that are being packed into a single ascii character
-
 	smallerGrayImg <- matrix(NA,asciiRows,asciiCols)
 
 	# Shit just got real. We double-nested-looped in R. Sorry. 
