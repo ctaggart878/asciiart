@@ -4,6 +4,7 @@
 # or be mean to people, or violate Baamonde's license.)
 
 # Pass in a URL for a jpeg/jpg image, and get back ascii art.
+# If an image is gigantic, try scaling it down more. 
 
 asciiArt <- function(myUrl, scaleDown = 1) { 
 	require('jpeg')
