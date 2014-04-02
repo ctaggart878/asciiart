@@ -9,7 +9,7 @@
 asciiArt <- function(myUrl, scaleDown = 1) { 
 	require('jpeg')
 	require('png')
-	scaleDown <- scaleDown 
+	
 	
 	# Check what file type we're looking at. 
 	# Thank you Adrie on stack overflow:  http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r
