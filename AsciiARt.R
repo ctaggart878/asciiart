@@ -3,33 +3,49 @@
 # Copyright (c) 2014, C. Taggart Grant (Do whatever you want with my part, except break the law 
 # or be mean to people, or violate Baamonde's license.)
 
-# Pass in a URL for a jpeg/jpg image, and get back ascii art.
+# Pass in a URL for a jpeg/jpg or png image, and get back ascii art.
 
 asciiArt <- function(myUrl) { 
+
 	require('jpeg')
+	require('png')
 	
+	
+	# Check what file type we're looking at. 
+	# Thank you Adrie on stack overflow:  http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r
+	substrRight <- function(x, n){
+	  substr(x, nchar(x)-n+1, nchar(x))
+	}
+
+	fileType <- substrRight(myUrl, 3)
+		
 	# This is going to drop a file into your R working directory. 
 	# There are other ways to do this, but this was easy. 
 	# If you wonder where it is, just use getwd() to see where it ended up. 
+		
 	download.file(myUrl, "WhoPutThisShitOnMyComputer")
-	img <- readJPEG("WhoPutThisShitOnMyComputer")
 	
+	if (fileType == 'png') { 
+		img <- readPNG("WhoPutThisShitOnMyComputer")
+	} else {
+		img <- readJPEG("WhoPutThisShitOnMyComputer")
+	}
 	# Let's check if we're in color.  If so, convert to gray scale.
 	# We'll use a luminosity algorithm to conver to gray scale
 	# Thanks John D. Cook:  http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
-	
+
 	if (length(dim(img))==3) {
 		lum <- c(.21, .71, .07)
 		img[,,1] <- img[,,1] * lum[1]
 		img[,,2] <- img[,,2] * lum[2]
 		img[,,3] <- img[,,3] * lum[3]
 		grayImg <- img[,,1] + img[,,2] + img[,,3]	
-		
+
 	} else {
 		grayImg <- img
 	}
-	
-	
+
+
 	# Let's set up our ascii box.  We maybe will make this more dynamic later. 
 	# Get our current dimensions
 	grayRows <- dim(grayImg)[1]
@@ -49,12 +65,12 @@ asciiArt <- function(myUrl) {
 	# Update our rows for the trimmed image. 
 	grayRows <- grayRows - extraRows
 	grayCols <- grayCols - extraCols
-	
+
 	# Scale our gray image down by taking an average of the pixel
 	# values that are being packed into a single ascii character
-	
+
 	smallerGrayImg <- matrix(NA,asciiRows,asciiCols)
-	
+
 	# Shit just got real. We double-nested-looped in R. Sorry. 
 	# Also, we could just treat this data as a vector and then 
 	# reshape back it into a matrix later, but let's get something
@@ -66,7 +82,7 @@ asciiArt <- function(myUrl) {
 			smallerGrayImg[i,j] <- mean(grayImg[largeImgRowsRange,largeImgColsRange])
 		}
 	}
-	
+
 	# Some adjustmenst to the range of gray we've got in our new image. 
 	imgMin <- min(min(smallerGrayImg))
 	smallerGrayImg <- smallerGrayImg - imgMin
@@ -82,15 +98,15 @@ asciiArt <- function(myUrl) {
 	map <- seq(0,1,length = 24)
 	mappedGrayImg <- cut(smallerGrayImg, map, labels = asciis)
 	asciiImg <- matrix(mappedGrayImg,asciiRows,asciiCols,byrow=FALSE)
-		
-	
+
+
 	for (i in 1:asciiRows) {
 		for (j in 1:asciiCols) {
 			cat(asciiImg[i,j])
 		}
 		cat('\n')
 	}
-	
+
 	asciiImg
 }
 
