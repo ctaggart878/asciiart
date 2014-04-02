@@ -8,3 +8,5 @@ It will print the ascii art in R, and return a matrix object into your R environ
 It requires the jpeg package for R.  
 
 And the license is actually in the script. 
+
+(And, just notices that it may have some issues with larger images.  I'll have to check this.) 
