@@ -3,13 +3,12 @@
 # Copyright (c) 2014, C. Taggart Grant (Do whatever you want with my part, except break the law 
 # or be mean to people, or violate Baamonde's license.)
 
-# Pass in a URL for a jpeg/jpg or png image, and get back ascii art.
+# Pass in a URL for a jpeg/jpg image, and get back ascii art.
 
-asciiArt <- function(myUrl) { 
-
+asciiArt <- function(myUrl, scaleDown = 1) { 
 	require('jpeg')
 	require('png')
-	
+	scaleDown <- scaleDown 
 	
 	# Check what file type we're looking at. 
 	# Thank you Adrie on stack overflow:  http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r
@@ -22,6 +21,7 @@ asciiArt <- function(myUrl) {
 	# This is going to drop a file into your R working directory. 
 	# There are other ways to do this, but this was easy. 
 	# If you wonder where it is, just use getwd() to see where it ended up. 
+		
 	download.file(myUrl, "WhoPutThisShitOnMyComputer")
 	
 	if (fileType == 'png') { 
@@ -29,10 +29,10 @@ asciiArt <- function(myUrl) {
 	} else {
 		img <- readJPEG("WhoPutThisShitOnMyComputer")
 	}
-
 	# Let's check if we're in color.  If so, convert to gray scale.
 	# We'll use a luminosity algorithm to conver to gray scale
 	# Thanks John D. Cook:  http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
+
 	if (length(dim(img))==3) {
 		lum <- c(.21, .71, .07)
 		img[,,1] <- img[,,1] * lum[1]
@@ -52,13 +52,13 @@ asciiArt <- function(myUrl) {
 
 	# Let's set up our ascii box, which is scaled down
 	# %/% is integer division in R
-	asciiRows <- grayRows %/% 7
-	asciiCols <- grayCols %/% 4
+	asciiRows <- grayRows %/% (7 * scaleDown)
+	asciiCols <- grayCols %/% (4 * scaleDown)
 	myBox <- matrix(data = NA, nrow = asciiRows, ncol = asciiCols)
 
 	# Let's make our original image fit our new box by clipping off the extra. 
-	extraRows <- grayRows %% 7
-	extraCols <- grayRows %% 4
+	extraRows <- grayRows %% (7 * scaleDown)
+	extraCols <- grayRows %% (4 * scaleDown)
 	grayImgAdj <- grayImg[1:(grayRows-extraRows),1:(grayCols-extraCols)]
 
 	# Update our rows for the trimmed image. 
@@ -67,6 +67,7 @@ asciiArt <- function(myUrl) {
 
 	# Scale our gray image down by taking an average of the pixel
 	# values that are being packed into a single ascii character
+
 	smallerGrayImg <- matrix(NA,asciiRows,asciiCols)
 
 	# Shit just got real. We double-nested-looped in R. Sorry. 
@@ -75,8 +76,8 @@ asciiArt <- function(myUrl) {
 	# that works first. 
 	for (i in 1:asciiRows) { 
 		for (j in 1:asciiCols) {
-			largeImgRowsRange <- ((i-1) * 7) + seq(1,7)
-			largeImgColsRange <- ((j-1) * 4) + seq(1,4)
+			largeImgRowsRange <- ((i-1) * (7 * scaleDown)) + seq(1,(7 * scaleDown))
+			largeImgColsRange <- ((j-1) * (4 * scaleDown)) + seq(1,(4 * scaleDown))
 			smallerGrayImg[i,j] <- mean(grayImg[largeImgRowsRange,largeImgColsRange])
 		}
 	}
@@ -88,7 +89,7 @@ asciiArt <- function(myUrl) {
 	smallerGrayImg <- smallerGrayImg / imgMax
 
 	# We're just going to use this character set to do the drawings.
-	asciis <- rev(unlist(strsplit(' .,:;irXAs253hMHGS#9B&@', "")))
+	asciis <- rev(unlist(strsplit(' .,:;irsXA253hMHGS#9B&@', "")))
 
 	# This is gives a numerical vector 23 element in length, so that
 	# we can map a certain greyscale value to our characters.
