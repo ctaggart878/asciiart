@@ -2,15 +2,9 @@
 # Copyright (c) 2014, Daniel Baamonde for original matlab code, his license is included below.
 # Copyright (c) 2014, C. Taggart Grant (do whatever you want with my part, except break the law or be mean to people or violate Baamonde's license)
 
-# You can pass either a URL or a local directory path to the function, 
-# and you'll get back ascii art of that image.  Go nuts. 
-
-<<<<<<< HEAD
+# Pass in a URL for a jpeg/jpg image, and get back ascii art.
 
 asciiArt <- function(myUrl) { 
-=======
-imgToAscii <- function(myUrl) { 
->>>>>>> 145f85f84a203469867527648d0f9137e0d7c2d8
 	require('jpeg')
 	
 	# This is going to drop a file into your R working directory. 
