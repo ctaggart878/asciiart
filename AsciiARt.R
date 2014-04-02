@@ -1,6 +1,7 @@
 # JPEG to ascii art
 # Copyright (c) 2014, Daniel Baamonde for original matlab code, his license is included below.
-# Copyright (c) 2014, C. Taggart Grant (do whatever you want with my part, except break the law or be mean to people or violate Baamonde's license)
+# Copyright (c) 2014, C. Taggart Grant (Do whatever you want with my part, except break the law 
+# or be mean to people, or violate Baamonde's license.)
 
 # Pass in a URL for a jpeg/jpg image, and get back ascii art.
 
