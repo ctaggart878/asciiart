@@ -5,6 +5,7 @@
 
 # Pass in a URL for a jpeg/jpg image, and get back ascii art.
 # If an image is gigantic, try scaling it down more. 
+# Also, lots of comments, because why not. 
 
 asciiArt <- function(myUrl, scaleDown = 1) { 
 	require('jpeg')
@@ -31,7 +32,7 @@ asciiArt <- function(myUrl, scaleDown = 1) {
 		img <- readJPEG("WhoPutThisShitOnMyComputer")
 	}
 	# Let's check if we're in color.  If so, convert to gray scale.
-	# We'll use a luminosity algorithm to conver to gray scale
+	# We'll use a luminosity algorithm to convert to gray scale
 	# Thanks John D. Cook:  http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
 
 	if (length(dim(img))==3) {
@@ -46,18 +47,19 @@ asciiArt <- function(myUrl, scaleDown = 1) {
 	}
 
 
-	# Let's set up our ascii box.  We maybe will make this more dynamic later. 
-	# Get our current dimensions
+	# Get our current image dimensions
 	grayRows <- dim(grayImg)[1]
 	grayCols <- dim(grayImg)[2]
 
-	# Let's set up our ascii box, which is scaled down
+	# Let's set up our ascii box, scaled by our scaleDown factor (can 
+	# use 0.5 to scale up, and that's counterintuitive, but here we go)
 	# %/% is integer division in R
 	asciiRows <- grayRows %/% (7 * scaleDown)
 	asciiCols <- grayCols %/% (4 * scaleDown)
 	myBox <- matrix(data = NA, nrow = asciiRows, ncol = asciiCols)
 
 	# Let's make our original image fit our new box by clipping off the extra. 
+	# Also, review this.  I think this may be unnecessary given some changes.
 	extraRows <- grayRows %% (7 * scaleDown)
 	extraCols <- grayRows %% (4 * scaleDown)
 	grayImgAdj <- grayImg[1:(grayRows-extraRows),1:(grayCols-extraCols)]
@@ -71,7 +73,7 @@ asciiArt <- function(myUrl, scaleDown = 1) {
 
 	smallerGrayImg <- matrix(NA,asciiRows,asciiCols)
 
-	# Shit just got real. We double-nested-looped in R. Sorry. 
+	# Shit just got real. We double-nested-looped in R. Sorry. It's slow.  
 	# Also, we could just treat this data as a vector and then 
 	# reshape back it into a matrix later, but let's get something
 	# that works first. 
@@ -83,7 +85,7 @@ asciiArt <- function(myUrl, scaleDown = 1) {
 		}
 	}
 
-	# Some adjustmenst to the range of gray we've got in our new image. 
+	# Some adjustments to the range of gray we've got in our new image. 
 	imgMin <- min(min(smallerGrayImg))
 	smallerGrayImg <- smallerGrayImg - imgMin
 	imgMax <- max(max(smallerGrayImg))
@@ -96,10 +98,12 @@ asciiArt <- function(myUrl, scaleDown = 1) {
 	# we can map a certain greyscale value to our characters.
 	# This also replaces linspace from matlab.
 	map <- seq(0,1,length = 24)
+	
+	# cut() is a timesaver here.  Check the documentation, it's a perfect fit.
 	mappedGrayImg <- cut(smallerGrayImg, map, labels = asciis)
 	asciiImg <- matrix(mappedGrayImg,asciiRows,asciiCols,byrow=FALSE)
 
-
+	# This outputs it to your terminal in R
 	for (i in 1:asciiRows) {
 		for (j in 1:asciiCols) {
 			cat(asciiImg[i,j])
