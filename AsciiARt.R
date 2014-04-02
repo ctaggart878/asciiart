@@ -5,11 +5,8 @@
 # You can pass either a URL or a local directory path to the function, 
 # and you'll get back ascii art of that image.  Go nuts. 
 
-myUrl <- 'http://www.breakingtheline.com/.a/6a00e39823afe588330133f3fb8c07970b-pi'
-myUrl <- 'http://wac.450f.edgecastcdn.net/80450F/loudwire.com/files/2012/12/Metallica1.jpg'
 
-
-imgToAscii <- function(myUrl) { 
+asciiArt <- function(myUrl) { 
 	require('jpeg')
 	
 	# This is going to drop a file into your R working directory. 
@@ -48,7 +45,7 @@ imgToAscii <- function(myUrl) {
 	# Let's make our original image fit our new box by clipping off the extra. 
 	extraRows <- grayRows %% 7
 	extraCols <- grayRows %% 4
-	grayImg <- grayImg[1:(grayRows-extraRows),1:(grayCols-extraCols)]
+	grayImgAdj <- grayImg[1:(grayRows-extraRows),1:(grayCols-extraCols)]
 
 	# Update our rows for the trimmed image. 
 	grayRows <- grayRows - extraRows
